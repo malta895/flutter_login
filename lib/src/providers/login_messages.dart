@@ -17,6 +17,7 @@ class LoginMessages with ChangeNotifier {
     this.flushbarTitleError = defaultflushbarTitleError,
     this.flushbarTitleSuccess = defaultflushbarTitleSuccess,
     this.signUpSuccess = defaultSignUpSuccess,
+    this.providersText = defaultProvidersText,
   });
 
   static const defaultUserHint = 'Email';
@@ -35,6 +36,7 @@ class LoginMessages with ChangeNotifier {
   static const defaultflushbarTitleSuccess = 'Success';
   static const defaultflushbarTitleError = 'Error';
   static const defaultSignUpSuccess = 'An activation link has been sent';
+  static const defaultProvidersText = 'or login with';
 
   /// Hint text of the userHint [TextField]
   /// By default is Email
@@ -83,4 +85,7 @@ class LoginMessages with ChangeNotifier {
 
   /// The success message to show after signing up
   final String signUpSuccess;
+
+  // The Text above the providers buttons/icons
+  final String providersText;
 }
