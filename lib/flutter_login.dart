@@ -34,9 +34,9 @@ class LoginProvider {
 
   LoginProvider({
     this.button,
-    this.icon, 
+    this.icon,
     this.callback,
-    });
+  });
 }
 
 class _AnimationTimeDilationDropdown extends StatelessWidget {

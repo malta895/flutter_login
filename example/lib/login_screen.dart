@@ -42,44 +42,44 @@ class LoginScreen extends StatelessWidget {
       logoTag: Constants.logoTag,
       titleTag: Constants.titleTag,
       loginProviders: [
-          LoginProvider(
+        LoginProvider(
           button: SignInButton(
-                Buttons.FacebookNew,
-                onPressed: () async {
-                  print('start facebook sign in');
-                  await Future.delayed(loginTime);
-                  print('stop facebook sign in');              
-                  return '';
-                },
-              ),
-          ),
-          LoginProvider(
-            icon: FontAwesomeIcons.google,
-            callback: () async {
-              print('start google sign in');
+            Buttons.FacebookNew,
+            onPressed: () async {
+              print('start facebook sign in');
               await Future.delayed(loginTime);
-              print('stop google sign in');              
+              print('stop facebook sign in');
               return '';
             },
           ),
-          LoginProvider(
-            icon: FontAwesomeIcons.linkedinIn,
-            callback: () async {         
-              print('start linkdin sign in');
-              await Future.delayed(loginTime);         
-              print('stop linkdin sign in');              
-              return '';
-            },
-          ),
-          LoginProvider(
-            icon: FontAwesomeIcons.githubAlt,
-            callback: () async {
-              print('start github sign in');
-              await Future.delayed(loginTime);
-              print('stop github sign in');              
-              return '';
-            },
-          ),
+        ),
+        LoginProvider(
+          icon: FontAwesomeIcons.google,
+          callback: () async {
+            print('start google sign in');
+            await Future.delayed(loginTime);
+            print('stop google sign in');
+            return '';
+          },
+        ),
+        LoginProvider(
+          icon: FontAwesomeIcons.linkedinIn,
+          callback: () async {
+            print('start linkdin sign in');
+            await Future.delayed(loginTime);
+            print('stop linkdin sign in');
+            return '';
+          },
+        ),
+        LoginProvider(
+          icon: FontAwesomeIcons.githubAlt,
+          callback: () async {
+            print('start github sign in');
+            await Future.delayed(loginTime);
+            print('stop github sign in');
+            return '';
+          },
+        ),
       ],
       // loginAfterSignUp: false,
       // hideForgotPasswordButton: true,

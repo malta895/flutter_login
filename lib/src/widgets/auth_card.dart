@@ -741,58 +741,52 @@ class _LoginCardState extends State<_LoginCard> with TickerProviderStateMixin {
     );
   }
 
-  Widget _buildProvidersLogInButton(ThemeData theme, LoginMessages messages, Auth auth, LoginTheme loginTheme) {
+  Widget _buildProvidersLogInButton(ThemeData theme, LoginMessages messages,
+      Auth auth, LoginTheme loginTheme) {
     // ignore: omit_local_variable_types
     List<LoginProvider> buttonProvidersList = [];
     // ignore: omit_local_variable_types
     List<LoginProvider> iconProvidersList = [];
     auth.loginProviders?.forEach((LoginProvider loginProvider) {
-      if(loginProvider.button != null){
-        buttonProvidersList.add( 
-          LoginProvider(
-            icon: loginProvider.icon,
-            button: loginProvider.button,
-            callback: loginProvider.callback,
-          )
-        );
-      } else if (loginProvider.icon != null){
-        iconProvidersList.add( 
-          LoginProvider(
-            icon: loginProvider.icon,
-            button: loginProvider.button,
-            callback: loginProvider.callback,
-          )
-        );
+      if (loginProvider.button != null) {
+        buttonProvidersList.add(LoginProvider(
+          icon: loginProvider.icon,
+          button: loginProvider.button,
+          callback: loginProvider.callback,
+        ));
+      } else if (loginProvider.icon != null) {
+        iconProvidersList.add(LoginProvider(
+          icon: loginProvider.icon,
+          button: loginProvider.button,
+          callback: loginProvider.callback,
+        ));
       }
     });
-    if(buttonProvidersList.isNotEmpty){
+    if (buttonProvidersList.isNotEmpty) {
       return Column(
         children: [
           _buildButtonColumn(theme, messages, buttonProvidersList, loginTheme),
-          iconProvidersList.isNotEmpty ? Row(
-            children: <Widget>[
-                Expanded(
-                    child: Divider()
-                ),       
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text('OR'),
-                ),        
-                Expanded(
-                    child: Divider()
-                ),
-              ]
-          ) : Container(),
+          iconProvidersList.isNotEmpty
+              ? Row(children: <Widget>[
+                  Expanded(child: Divider()),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text('OR'),
+                  ),
+                  Expanded(child: Divider()),
+                ])
+              : Container(),
           _buildIconRow(theme, messages, iconProvidersList, loginTheme),
         ],
       );
-    } else if (iconProvidersList.isNotEmpty){
+    } else if (iconProvidersList.isNotEmpty) {
       return _buildIconRow(theme, messages, iconProvidersList, loginTheme);
     }
     return Container();
   }
 
-  Widget _buildButtonColumn(ThemeData theme, LoginMessages messages, List<LoginProvider> buttonProvidersList, LoginTheme loginTheme){
+  Widget _buildButtonColumn(ThemeData theme, LoginMessages messages,
+      List<LoginProvider> buttonProvidersList, LoginTheme loginTheme) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: buttonProvidersList.map((loginProvider) {
@@ -808,7 +802,8 @@ class _LoginCardState extends State<_LoginCard> with TickerProviderStateMixin {
     );
   }
 
-  Widget _buildIconRow(ThemeData theme, LoginMessages messages, List<LoginProvider> iconProvidersList, LoginTheme loginTheme){
+  Widget _buildIconRow(ThemeData theme, LoginMessages messages,
+      List<LoginProvider> iconProvidersList, LoginTheme loginTheme) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: iconProvidersList.map((loginProvider) {
@@ -899,20 +894,16 @@ class _LoginCardState extends State<_LoginCard> with TickerProviderStateMixin {
                     : SizedBox.fromSize(
                         size: Size.fromHeight(10),
                       ),
-                 auth.loginProviders!.isNotEmpty ? Row(
-                  children: <Widget>[
-                      Expanded(
-                          child: Divider()
-                      ),       
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(messages.providersText),
-                      ),        
-                      Expanded(
-                          child: Divider()
-                      ),
-                    ]
-                ) : Container(),
+                auth.loginProviders!.isNotEmpty
+                    ? Row(children: <Widget>[
+                        Expanded(child: Divider()),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(messages.providersText),
+                        ),
+                        Expanded(child: Divider()),
+                      ])
+                    : Container(),
                 _buildProvidersLogInButton(theme, messages, auth, loginTheme),
               ],
             ),
