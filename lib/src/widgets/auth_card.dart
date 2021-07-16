@@ -49,7 +49,8 @@ class AuthCard extends StatefulWidget {
       this.hideProvidersTitle = false,
       this.additionalSignUpFields,
       this.disableCustomPageTransformer = false,
-      this.loginTheme})
+      this.loginTheme,
+      this.navigateBackAfterRecovery = false})
       : super(key: key);
 
   final EdgeInsets padding;
@@ -68,6 +69,7 @@ class AuthCard extends StatefulWidget {
 
   final bool disableCustomPageTransformer;
   final LoginTheme? loginTheme;
+  final bool navigateBackAfterRecovery;
 
   @override
   AuthCardState createState() => AuthCardState();
@@ -327,6 +329,7 @@ class AuthCardState extends State<AuthCard> with TickerProviderStateMixin {
           userType: widget.userType,
           onSwitchLogin: () => _changeCard(_loginPageIndex),
           loginTheme: widget.loginTheme,
+          navigateBack: widget.navigateBackAfterRecovery,
         );
       case _additionalSignUpIndex:
         if (widget.additionalSignUpFields == null) {
