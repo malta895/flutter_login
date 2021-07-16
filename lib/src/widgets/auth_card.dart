@@ -34,21 +34,23 @@ part 'recover_card.dart';
 part 'user_data_card.dart';
 
 class AuthCard extends StatefulWidget {
-  AuthCard({
-    Key? key,
-    required this.userType,
-    this.padding = const EdgeInsets.all(0),
-    this.loadingController,
-    this.userValidator,
-    this.passwordValidator,
-    this.onSubmit,
-    this.onSubmitCompleted,
-    this.hideForgotPasswordButton = false,
-    this.hideSignUpButton = false,
-    this.loginAfterSignUp = true,
-    this.hideProvidersTitle = false,
-    this.additionalSignUpFields,
-  }) : super(key: key);
+  AuthCard(
+      {Key? key,
+      required this.userType,
+      this.padding = const EdgeInsets.all(0),
+      this.loadingController,
+      this.userValidator,
+      this.passwordValidator,
+      this.onSubmit,
+      this.onSubmitCompleted,
+      this.hideForgotPasswordButton = false,
+      this.hideSignUpButton = false,
+      this.loginAfterSignUp = true,
+      this.hideProvidersTitle = false,
+      this.additionalSignUpFields,
+      this.disableCustomPageTransformer = false,
+      this.loginTheme})
+      : super(key: key);
 
   final EdgeInsets padding;
   final AnimationController? loadingController;
@@ -61,7 +63,11 @@ class AuthCard extends StatefulWidget {
   final bool loginAfterSignUp;
   final LoginUserType userType;
   final bool hideProvidersTitle;
+
   final List<UserFormField>? additionalSignUpFields;
+
+  final bool disableCustomPageTransformer;
+  final LoginTheme? loginTheme;
 
   @override
   AuthCardState createState() => AuthCardState();
@@ -188,12 +194,9 @@ class AuthCardState extends State<AuthCard> with TickerProviderStateMixin {
   }
 
   Future<void> _forwardChangeRouteAnimation() {
-    final isLogin = Provider.of<Auth>(context, listen: false).isLogin;
     final deviceSize = MediaQuery.of(context).size;
     final cardSize = getWidgetSize(_cardKey)!;
-    // add .35 to make sure the scaling will cover the whole screen
-    final widthRatio =
-        deviceSize.width / cardSize.height + (isLogin ? .35 : .65);
+    final widthRatio = deviceSize.width / cardSize.height + 1;
     final heightRatio = deviceSize.height / cardSize.width + .25;
 
     _cardSize2AnimationX =
@@ -305,7 +308,6 @@ class AuthCardState extends State<AuthCard> with TickerProviderStateMixin {
             requireAdditionalSignUpFields:
                 widget.additionalSignUpFields != null,
             onSwitchRecoveryPassword: () => _changeCard(_recoveryIndex),
-
             onSwitchSignUpAdditionalData: () =>
                 _changeCard(_additionalSignUpIndex),
             onSubmitCompleted: () {
@@ -324,6 +326,7 @@ class AuthCardState extends State<AuthCard> with TickerProviderStateMixin {
           userValidator: widget.userValidator,
           userType: widget.userType,
           onSwitchLogin: () => _changeCard(_loginPageIndex),
+          loginTheme: widget.loginTheme,
         );
       case _additionalSignUpIndex:
         if (widget.additionalSignUpFields == null) {
@@ -360,7 +363,9 @@ class AuthCardState extends State<AuthCard> with TickerProviderStateMixin {
         /// Need to keep track of page index because soft keyboard will
         /// make page view rebuilt
         index: _pageIndex,
-        transformer: CustomPageTransformer(),
+        transformer: widget.disableCustomPageTransformer
+            ? null
+            : CustomPageTransformer(),
         itemBuilder: (BuildContext context, int index) {
           return Align(
             alignment: Alignment.topCenter,

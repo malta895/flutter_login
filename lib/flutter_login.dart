@@ -30,12 +30,14 @@ import 'src/constants.dart';
 
 class LoginProvider {
   final IconData icon;
+  final String label;
   final ProviderAuthCallback callback;
   final ProviderNeedsSignUpCallback? providerNeedsSignUpCallback;
 
   LoginProvider({
     required this.icon,
     required this.callback,
+    this.label = '',
     this.providerNeedsSignUpCallback,
   });
 }
@@ -86,6 +88,7 @@ class _Header extends StatefulWidget {
   _Header({
     this.logoPath,
     this.logoTag,
+    this.logoWidth = 0.75,
     this.title,
     this.titleTag,
     this.height = 250.0,
@@ -97,6 +100,7 @@ class _Header extends StatefulWidget {
 
   final String? logoPath;
   final String? logoTag;
+  final double logoWidth;
   final String? title;
   final String? titleTag;
   final double height;
@@ -162,13 +166,14 @@ class __HeaderState extends State<_Header> {
             gap,
         kMaxLogoHeight);
     final displayLogo = widget.logoPath != null && logoHeight >= kMinLogoHeight;
+    final cardWidth = min(MediaQuery.of(context).size.width * 0.75, 360.0);
 
     var logo = displayLogo
         ? Image.asset(
             widget.logoPath!,
             filterQuality: FilterQuality.high,
             height: logoHeight,
-            width: MediaQuery.of(context).size.width * 0.75,
+            width: widget.logoWidth * cardWidth,
           )
         : NullWidget();
 
@@ -252,6 +257,7 @@ class FlutterLogin extends StatefulWidget {
     this.footer,
     this.hideProvidersTitle = false,
     this.additionalSignupFields,
+    this.disableCustomPageTransformer = false,
   }) : super(key: key);
 
   /// Called when the user hit the submit button when in sign up mode
@@ -335,6 +341,10 @@ class FlutterLogin extends StatefulWidget {
   /// Hide the title above the login providers. If no providers are set this is uneffective
   final bool hideProvidersTitle;
 
+  /// Disable the page transformation between switching authentication modes.
+  /// Fixes #97 if disabled. https://github.com/NearHuscarl/flutter_login/issues/97
+  final bool disableCustomPageTransformer;
+
   static final FormFieldValidator<String> defaultEmailValidator = (value) {
     if (value!.isEmpty || !Regex.email.hasMatch(value)) {
       return 'Invalid email!';
@@ -417,6 +427,7 @@ class _FlutterLoginState extends State<FlutterLogin>
       height: height,
       logoPath: widget.logo,
       logoTag: widget.logoTag,
+      logoWidth: widget.theme?.logoWidth ?? 0.75,
       title: widget.title,
       titleTag: widget.titleTag,
       loginTheme: loginTheme,
@@ -671,6 +682,9 @@ class _FlutterLoginState extends State<FlutterLogin>
                         loginAfterSignUp: widget.loginAfterSignUp,
                         hideProvidersTitle: widget.hideProvidersTitle,
                         additionalSignUpFields: widget.additionalSignupFields,
+                        disableCustomPageTransformer:
+                            widget.disableCustomPageTransformer,
+                        loginTheme: widget.theme,
                       ),
                     ),
                     Positioned(
