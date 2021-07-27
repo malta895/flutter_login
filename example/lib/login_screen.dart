@@ -1,7 +1,8 @@
-import 'package:flutter/scheduler.dart' show timeDilation;
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart' show timeDilation;
 import 'package:flutter_login/flutter_login.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
 import 'constants.dart';
 import 'custom_route.dart';
 import 'dashboard_screen.dart';
@@ -24,7 +25,7 @@ class LoginScreen extends StatelessWidget {
     });
   }
 
-  Future<String?> _signupUser(LoginData data) {
+  Future<String?> _signupUser(SignupData data) {
     return Future.delayed(loginTime).then((_) {
       return null;
     });
@@ -103,14 +104,8 @@ class LoginScreen extends StatelessWidget {
           },
         ),
       ],
-      onAdditionalFieldsSubmit: (fields) async {
-        fields.forEach((key, value) {
-          print('$key: $value');
-        });
-        return null;
-      },
       // hideProvidersTitle: false,
-      loginAfterSignUp: false,
+      // loginAfterSignUp: false,
       // hideForgotPasswordButton: true,
       // hideSignUpButton: true,
       // disableCustomPageTransformer: true,
@@ -226,11 +221,16 @@ class LoginScreen extends StatelessWidget {
         print('Password: ${loginData.password}');
         return _loginUser(loginData);
       },
-      onSignup: (loginData) {
+      onSignup: (signupData) {
         print('Signup info');
-        print('Name: ${loginData.name}');
-        print('Password: ${loginData.password}');
-        return _signupUser(loginData);
+        print('Name: ${signupData.name}');
+        print('Password: ${signupData.password}');
+
+        signupData.additionalSignupData?.forEach((key, value) {
+          print('$key: $value');
+        });
+
+        return _signupUser(signupData);
       },
       onSubmitAnimationCompleted: () {
         Navigator.of(context).pushReplacement(FadePageRoute(

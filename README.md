@@ -20,7 +20,7 @@ Follow the install instructions [here](https://pub.dev/packages/flutter_login#-i
 
 Property |   Type     | Description
 -------- |------------| ---------------
-onSignup |   `AuthCallback`     | <sub>Called when the user hit the submit button when in sign up mode</sub>
+onSignup |   `AuthCallback`     | <sub>Called when the user hit the submit button when in sign up mode. It receives a `SignupData` object, with name, password and, if `additionalSignUpFields` is not null, the additional fields filled in by the user in a `Map<String,String>`</sub>
 onLogin |   `AuthCallback`     | <sub>Called when the user hit the submit button when in login mode</sub>
 onRecoverPassword |   `RecoverCallback`     | <sub>Called when the user hit the submit button when in recover password mode</sub>
 title |   `String`     | <sub>The large text above the login [Card], usually the app or company name. Leave the string empty or null if you want no title.</sub>
@@ -38,12 +38,8 @@ hideForgotPasswordButton |   `bool`     | <sub>Hides the Forgot Password button 
 hideSignUpButton |   `bool`     | <sub>Hides the SignUp button if set to true</sub>
 hideProvidersTitle |   `bool`     | <sub>Hides the title above login providers if set to true. In case the providers List is empty this is uneffective, as the title is hidden anyways. The default is `false`</sub>
 disableCustomPageTransformer |   `bool`     | <sub>Disables the custom transition which causes RenderBox was not laid out error. See [#97](https://github.com/NearHuscarl/flutter_login/issues/97) for more info.</sub>
-
-additionalSignUpFields | `Map<String, UserFormField>` | <sub> Used to specify the additional form fields; the form is shown right after signin up in </sub>
-onAdditionalFieldsSubmit | `AdditionalFieldsCallback?` | <sub> This function is called right after the submit of the additional fields form. It receives a `Map<String, String>` containing the values filled in by the user. The function should return `null` on success, or a `String` that will be shown to the user in case of error. </sub>
+additionalSignUpFields | `Map<String, UserFormField>` | <sub> Used to specify the additional form fields; the form is shown right after signin up. You can provide at most 6 additional fields. </sub>
 navigateBackAfterRecovery |   `bool`     | <sub>Navigate back to the login page after successful recovery.</sub>
-
-
 
 
 
@@ -120,8 +116,13 @@ icon | `Icon?` | The icon shown on the left of the field. Defaults to the user i
 userType | `LoginUserType` | The LoginUserType of the form. The right keyboard and suggestions will be shown accordingly. Defaults to `LoginUserType.user`
 
 
-
-
+### LoginProvider
+Property |   Type     | Description |
+-------- |------------| ------------| 
+icon     | `IconData` | The icon shown on the provider button |
+label    | `String`   | The label shown under the provider |
+callback | `ProviderAuthCallback` | A Function called when the provider button is pressed. It must return null on success, or a `String` describing the error on failure. |
+providerNeedsSignUpCallback | `ProviderNeedsSignUpCallback?` | Optional. Requires that the `additionalSignUpFields` argument is passed to `FlutterLogin`. When given, this callback must return a `Future<bool>`. If it evaluates to `true` the card containing the additional signup fields is shown, right after the evaluation of `callback`. If not given the default behaviour is not to show the signup card.
 
 ## Examples
 

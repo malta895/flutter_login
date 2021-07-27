@@ -1,7 +1,7 @@
 part of auth_card;
 
-class _UserDataCard extends StatefulWidget {
-  _UserDataCard({
+class _AdditionalSignUpCard extends StatefulWidget {
+  _AdditionalSignUpCard({
     Key? key,
     required this.formFields,
     required this.loginAfterSignUp,
@@ -13,7 +13,7 @@ class _UserDataCard extends StatefulWidget {
       throw RangeError('The formFields array must not be empty');
     } else if (formFields.length > 6) {
       throw RangeError(
-          'More than 6 formFields are not displayable, you $formFields.length');
+          'More than 6 formFields are not displayable, you provided ${formFields.length}');
     }
   }
 
@@ -24,10 +24,10 @@ class _UserDataCard extends StatefulWidget {
   final AnimationController? loadingController;
 
   @override
-  _UserDataCardState createState() => _UserDataCardState();
+  _AdditionalSignUpCardState createState() => _AdditionalSignUpCardState();
 }
 
-class _UserDataCardState extends State<_UserDataCard>
+class _AdditionalSignUpCardState extends State<_AdditionalSignUpCard>
     with TickerProviderStateMixin {
   final GlobalKey<FormState> _formCompleteSignupKey = GlobalKey();
 
@@ -88,8 +88,10 @@ class _UserDataCardState extends State<_UserDataCard>
 
   @override
   void dispose() {
+    // Don't dispose the controller when we get it from outside, otherwise we get an Error
+    // since also the parent widget disposes it
+    if (widget.loadingController == null) _loadingController.dispose();
     _fieldAnimationControllers.forEach((element) => element.dispose());
-    _loadingController.dispose();
     _submitController.dispose();
     super.dispose();
   }
@@ -114,8 +116,23 @@ class _UserDataCardState extends State<_UserDataCard>
 
     // We have to convert the Map<String, TextEditingController> to a Map<String, String>
     // and pass it to the function given by the user
-    error = await auth.onAdditionalFieldsSubmit
-        ?.call(_nameControllers.map((key, value) => MapEntry(key, value.text)));
+    auth.additionalSignupData =
+        _nameControllers.map((key, value) => MapEntry(key, value.text));
+
+    switch (auth.authType) {
+      case AuthType.provider:
+        error = await auth.onSignup!(SignupData.fromProvider(
+          additionalSignupData: auth.additionalSignupData,
+        ));
+        break;
+      case AuthType.userPassword:
+        error = await auth.onSignup!(SignupData.fromSignupForm(
+          name: auth.email,
+          password: auth.password,
+          additionalSignupData: auth.additionalSignupData,
+        ));
+        break;
+    }
 
     await _submitController.reverse();
     if (!DartHelper.isNullOrEmpty(error)) {
@@ -124,18 +141,17 @@ class _UserDataCardState extends State<_UserDataCard>
       return false;
     }
 
-    await _loadingController.reverse();
-
-    if (auth.isSignup && !widget.loginAfterSignUp) {
+    if (!widget.loginAfterSignUp) {
       showSuccessToast(context, messages.flushbarTitleSuccess,
           messages.signUpSuccess, Duration(seconds: 4));
       setState(() => _isSubmitting = false);
 
-      await Future.delayed(Duration(seconds: 4))
-          .then((_) => widget.switchToLogin());
+      await widget.switchToLogin();
 
       return false;
     }
+
+    await _loadingController.reverse();
 
     widget.onSubmitCompleted?.call();
 
@@ -162,7 +178,7 @@ class _UserDataCardState extends State<_UserDataCard>
             autofillHints: [
               TextFieldUtils.getAutofillHints(formField.userType)
             ],
-            textInputAction: formField == widget.formFields.last
+            textInputAction: formField.keyName == widget.formFields.last.keyName
                 ? TextInputAction.done
                 : TextInputAction.next,
             validator: formField.fieldValidator,
@@ -180,7 +196,7 @@ class _UserDataCardState extends State<_UserDataCard>
       scale: _buttonScaleAnimation,
       child: AnimatedButton(
         controller: _submitController,
-        text: messages.completeSignupButton,
+        text: messages.additionalSignUpSubmitButton,
         onPressed: !_isSubmitting ? _submit : null,
       ),
     );
@@ -213,7 +229,7 @@ class _UserDataCardState extends State<_UserDataCard>
                 ScaleTransition(
                   scale: _buttonScaleAnimation,
                   child: Text(
-                    messages.completeSignupInfo,
+                    messages.additionalSignUpFormDescription,
                     key: kRecoverPasswordIntroKey,
                     textAlign: TextAlign.center,
                     style: theme.textTheme.bodyText2,

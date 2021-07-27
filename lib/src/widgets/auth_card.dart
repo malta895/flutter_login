@@ -11,6 +11,7 @@ import 'package:flutter_login/src/dart_helper.dart';
 import 'package:flutter_login/src/matrix.dart';
 import 'package:flutter_login/src/models/login_data.dart';
 import 'package:flutter_login/src/models/login_user_type.dart';
+import 'package:flutter_login/src/models/signup_data.dart';
 import 'package:flutter_login/src/models/user_form_field.dart';
 import 'package:flutter_login/src/paddings.dart';
 import 'package:flutter_login/src/providers/auth.dart';
@@ -29,9 +30,9 @@ import 'custom_page_transformer.dart';
 import 'expandable_container.dart';
 import 'fade_in.dart';
 
+part 'additional_signup_card.dart';
 part 'login_card.dart';
 part 'recover_card.dart';
-part 'user_data_card.dart';
 
 class AuthCard extends StatefulWidget {
   AuthCard(
@@ -172,12 +173,14 @@ class AuthCardState extends State<AuthCard> with TickerProviderStateMixin {
 
     auth.currentCardIndex = newCardIndex;
 
-    _pageController!.animateToPage(
-      newCardIndex,
-      duration: Duration(milliseconds: 500),
-      curve: Curves.ease,
-    );
-    _pageIndex = newCardIndex;
+    setState(() {
+      _pageController!.animateToPage(
+        newCardIndex,
+        duration: Duration(milliseconds: 500),
+        curve: Curves.ease,
+      );
+      _pageIndex = newCardIndex;
+    });
   }
 
   Future<void>? runLoadingAnimation() {
@@ -327,15 +330,16 @@ class AuthCardState extends State<AuthCard> with TickerProviderStateMixin {
         return _RecoverCard(
           userValidator: widget.userValidator,
           userType: widget.userType,
-          onSwitchLogin: () => _changeCard(_loginPageIndex),
           loginTheme: widget.loginTheme,
           navigateBack: widget.navigateBackAfterRecovery,
+          onSwitchLogin: () => _changeCard(_loginPageIndex),
         );
+
       case _additionalSignUpIndex:
         if (widget.additionalSignUpFields == null) {
           throw StateError('The additional fields List is null');
         }
-        return _UserDataCard(
+        return _AdditionalSignUpCard(
           key: _cardKey,
           formFields: widget.additionalSignUpFields!,
           loadingController: widget.loadingController,
